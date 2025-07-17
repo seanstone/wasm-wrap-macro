@@ -5,7 +5,7 @@ use quote::{quote, ToTokens};
 use syn::{parse_macro_input, ImplItem, ItemImpl, Visibility};
 
 #[proc_macro_attribute]
-pub fn wasm_wrap_all(_attr: TokenStream, item: TokenStream) -> TokenStream {
+pub fn wasm_wrap(_attr: TokenStream, item: TokenStream) -> TokenStream {
     let input = parse_macro_input!(item as ItemImpl);
     let self_ty = &input.self_ty;
     let unsafety = &input.unsafety;
