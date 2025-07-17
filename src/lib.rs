@@ -32,7 +32,10 @@ pub fn wasm_wrap(_attr: TokenStream, item: TokenStream) -> TokenStream {
                             #vis async fn #ident(#inputs) -> Result<JsValue, JsValue> {
                                 let result: Result<_, Box<dyn std::error::Error>> = (async move { #block }).await;
                                 match result {
-                                    Ok(val) => serde_wasm_bindgen::to_value(&val)
+                                    Ok(val) => val.serialize(&serde_wasm_bindgen::Serializer::new()
+                                            .serialize_large_number_types_as_bigints(true)
+                                            // .serialize_maps_as_objects(true)
+                                        )
                                         .map_err(|e| wasm_bindgen::JsValue::from_str(&format!("serde error: {}", e))),
                                     Err(e) => Err(wasm_bindgen::JsValue::from_str(&format!("error: {}", e))),
                                 }
@@ -44,7 +47,10 @@ pub fn wasm_wrap(_attr: TokenStream, item: TokenStream) -> TokenStream {
                             #vis fn #ident(#inputs) -> Result<JsValue, JsValue> {
                                 let result: Result<_, Box<dyn std::error::Error>> = (move { #block });
                                 match result {
-                                    Ok(val) => serde_wasm_bindgen::to_value(&val)
+                                    Ok(val) => val.serialize(&serde_wasm_bindgen::Serializer::new()
+                                            .serialize_large_number_types_as_bigints(true)
+                                            // .serialize_maps_as_objects(true)
+                                        )
                                         .map_err(|e| wasm_bindgen::JsValue::from_str(&format!("serde error: {}", e))),
                                     Err(e) => Err(wasm_bindgen::JsValue::from_str(&format!("error: {}", e))),
                                 }
