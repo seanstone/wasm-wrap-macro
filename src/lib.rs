@@ -30,6 +30,7 @@ pub fn wasm_wrap(_attr: TokenStream, item: TokenStream) -> TokenStream {
                         quote! {
                             #[wasm_bindgen]
                             #vis async fn #ident(#inputs) -> Result<JsValue, JsValue> {
+                                use serde::Serialize;
                                 let result: Result<_, Box<dyn std::error::Error>> = (async move { #block }).await;
                                 match result {
                                     Ok(val) => val.serialize(&serde_wasm_bindgen::Serializer::new()
@@ -45,6 +46,7 @@ pub fn wasm_wrap(_attr: TokenStream, item: TokenStream) -> TokenStream {
                         quote! {
                             #[wasm_bindgen]
                             #vis fn #ident(#inputs) -> Result<JsValue, JsValue> {
+                                use serde::Serialize;
                                 let result: Result<_, Box<dyn std::error::Error>> = (move { #block });
                                 match result {
                                     Ok(val) => val.serialize(&serde_wasm_bindgen::Serializer::new()
